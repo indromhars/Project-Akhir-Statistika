@@ -1,4 +1,4 @@
-#!/home/indrovert/Documents/Programming/Python/Statistika/projectUAS/.venv/bin/python
+#!/mnt/1271abed-60fd-4f3e-9129-b58445e81d9e/Programming/Python/Statistika/Project-Akhir-Statistika/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

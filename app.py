@@ -1,63 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 import pandas as pd
-import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
+import numpy as np
+from chart import *
+import pickle
 
 app = Flask(__name__, template_folder="templates")
-
-def generate_pie_chart(df):
-    # Hitung jumlah data berdasarkan kategori
-    data_major_category = df['Major_category'].value_counts()
-
-    # Warna latar belakang dan warna teks yang ingin Anda gunakan
-    background_color = '#A6D1E6'  # Warna secondary
-    text_color = '#3D3C42'  # Warna quaternary
-
-    # Buat pie chart untuk Major Category
-    plt.figure(figsize=(8, 6), facecolor=background_color)  # Atur warna latar belakang di sini
-    plt.pie(data_major_category, labels=data_major_category.index, autopct='%1.1f%%', startangle=140, textprops={'color': text_color})
-    plt.axis('equal')
-
-    # Simpan pie chart ke dalam bentuk bytes
-    img = BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
-
-    # Encode gambar sebagai string base64
-    img_base64 = base64.b64encode(img.getvalue()).decode()
-
-    # Tutup plot
-    plt.close()
-
-    return img_base64
-
-def generate_bar_chart(df):
-    # Hitung jumlah data berdasarkan kategori
-    data_employed = df.groupby('Major_category')['Employed'].sum()
-
-    # Warna latar belakang dan warna teks yang ingin Anda gunakan
-    background_color = '#D8D3CD'  # Warna secondary
-    text_color = '#797A7E'  # Warna quaternary
-
-    # Buat diagram batang untuk kolom Employed
-    plt.figure(figsize=(10, 6), facecolor=background_color)  # Atur warna latar belakang di sini
-    data_employed.plot(kind='bar', color='#E0ECE4')  # Warna primary untuk bar chart
-    plt.ylabel('Employed', color=text_color)  # Atur warna teks
-    plt.xticks(rotation=45, color=text_color)  # Rotasi label sumbu x untuk kejelasan dan atur warna teks
-
-    # Simpan diagram batang ke dalam bentuk bytes
-    img = BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
-
-    # Encode gambar sebagai string base64
-    img_base64 = base64.b64encode(img.getvalue()).decode()
-
-    # Tutup plot
-    plt.close()
-
-    return img_base64
+model = pickle.load(open("train/model.pkl", "rb"))
+file_path = 'data/all-ages.csv'
+df = pd.read_csv(file_path)
 
 @app.route('/')
 def home():
@@ -69,10 +19,6 @@ def about():
 
 @app.route('/chart')
 def chart():
-    # Baca data CSV
-    file_path = 'data/all-ages.csv'
-    df = pd.read_csv(file_path)
-
     # Generate pie chart
     pie_chart_data = generate_pie_chart(df)
 
@@ -81,6 +27,46 @@ def chart():
 
     # Render template HTML dengan gambar yang telah dibuat
     return render_template('pages/chart.html', pie_chart_data=pie_chart_data, bar_chart_data=bar_chart_data)
+
+@app.route('/major', methods=['GET', 'POST'])
+def major():
+    if request.method == 'POST':
+        # Ambil data dari kolom 'Major'
+        majors = df['Major'].tolist()
+
+        # Initialize list to store numeric features
+        numeric_features = []
+
+        # Loop through form keys and check if value is numeric
+        for key, value in request.form.items():
+            # Skip 'Major' key
+            if key == 'Major':
+                major_input = value  # Simpan nilai 'Major' untuk digunakan dalam pesan
+                continue
+            try:
+                # Convert value to float and append to numeric_features list
+                numeric_features.append(float(value))
+            except ValueError:
+                # If value cannot be converted to float, ignore it
+                pass
+        
+        # Convert numeric features to numpy array
+        features = np.array([numeric_features])
+
+        # Predict unemployment rate
+        prediction = model.predict(features)
+
+        # Scale prediction to percentage
+        scaled_prediction = prediction[0] * 100
+
+        # Render template with prediction and majors
+        return render_template('pages/major.html', prediction_text='{} unemployment percentage is {:.2f}%'.format(major_input, scaled_prediction), majors=majors)
+
+    else:
+        # Ambil data dari kolom 'Major'
+        majors = df['Major'].tolist()
+
+        return render_template('pages/major.html', majors=majors)
 
 if __name__ == '__main__':
     app.run(debug=True)
