@@ -6,6 +6,7 @@ import pickle
 
 app = Flask(__name__, template_folder="templates")
 model = pickle.load(open("train/model.pkl", "rb"))
+modelSalary = pickle.load(open('train/modelSalary.pkl', 'rb'))
 file_path = 'data/all-ages.csv'
 df = pd.read_csv(file_path)
 
@@ -67,6 +68,51 @@ def major():
         majors = df['Major'].tolist()
 
         return render_template('pages/major.html', majors=majors)
+
+import locale
+
+@app.route('/salary', methods=['GET', 'POST'])
+def salary():
+    if request.method == 'POST':
+        # Set locale to English (United States)
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
+        # Ambil data dari kolom 'Major'
+        majors = df['Major'].tolist()
+
+        # Initialize list to store numeric features
+        numeric_features = []
+
+        # Loop through form keys and check if value is numeric
+        for key, value in request.form.items():
+            # Skip 'Major' key
+            if key == 'Major':
+                major_input = value  # Simpan nilai 'Major' untuk digunakan dalam pesan
+                continue
+            try:
+                # Convert value to float and append to numeric_features list
+                numeric_features.append(float(value))
+            except ValueError:
+                # If value cannot be converted to float, ignore it
+                pass
+        
+        # Convert numeric features to numpy array
+        features = np.array([numeric_features])
+
+        # Predict salary rate
+        salary_prediction = modelSalary.predict(features)
+
+        # Format prediction as USD
+        salary_formatted = locale.currency(salary_prediction[0], grouping=True)
+
+        # Render template with prediction and majors
+        return render_template('pages/salary.html', prediction_text='{} salary rate is {}'.format(major_input, salary_formatted), majors=majors)
+    
+    else:
+        # Ambil data dari kolom 'Major'
+        majors = df['Major'].tolist()
+
+        return render_template('pages/salary.html', majors=majors)
 
 if __name__ == '__main__':
     app.run(debug=True)
