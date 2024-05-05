@@ -1,8 +1,0 @@
-#!/mnt/1271abed-60fd-4f3e-9129-b58445e81d9e/Programming/Python/Statistika/Project-Akhir-Statistika/.venv/bin/python3
-# -*- coding: utf-8 -*-
-import re
-import sys
-from fontTools.subset import main
-if __name__ == '__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
-    sys.exit(main())
