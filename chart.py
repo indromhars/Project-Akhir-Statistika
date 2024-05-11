@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import seaborn as sns
 
 def generate_pie_chart(df):
     # Hitung jumlah data berdasarkan kategori
@@ -52,6 +53,25 @@ def generate_bar_chart(df):
     img_base64 = base64.b64encode(img.getvalue()).decode()
 
     # Tutup plot
+    plt.close()
+
+    return img_base64
+
+import seaborn as sns
+
+def heatmap(df):
+    # Select only numeric columns
+    numeric_df = df.select_dtypes(include=['float64', 'int64'])
+
+    # Plot heatmap
+    plt.figure(figsize=(15, 10))
+    sns.heatmap(numeric_df.corr(), annot=True, cmap='YlGnBu')
+    plt.title('Heatmap Korelasi semua kolom')
+
+    img = BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    img_base64 = base64.b64encode(img.getvalue()).decode()
     plt.close()
 
     return img_base64
