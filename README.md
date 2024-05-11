@@ -1,4 +1,4 @@
-# Project-Akhir-Statistika
+# Unemployment and Salary College Graduate USA
 
 > [!IMPORTANT]
 > Before you use this project, you need to create a virtual environment and install the needed packages

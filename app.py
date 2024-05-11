@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 from chart import *
 import pickle
+import locale
 
 app = Flask(__name__, template_folder="templates")
-model = pickle.load(open("train/model.pkl", "rb"))
+model = pickle.load(open('train/model.pkl', 'rb'))
 modelSalary = pickle.load(open('train/modelSalary.pkl', 'rb'))
 file_path = 'data/all-ages.csv'
 df = pd.read_csv(file_path)
@@ -26,8 +27,11 @@ def chart():
     # Generate bar chart
     bar_chart_data = generate_bar_chart(df)
 
+    # Generate Heatmap
+    heatmap_data = heatmap(df)
+
     # Render template HTML dengan gambar yang telah dibuat
-    return render_template('pages/chart.html', pie_chart_data=pie_chart_data, bar_chart_data=bar_chart_data)
+    return render_template('pages/chart.html', pie_chart_data=pie_chart_data, bar_chart_data=bar_chart_data, heatmap_data=heatmap_data)
 
 @app.route('/major', methods=['GET', 'POST'])
 def major():
@@ -48,28 +52,30 @@ def major():
                 # Convert value to float and append to numeric_features list
                 numeric_features.append(float(value))
             except ValueError:
-                # If value cannot be converted to float, ignore it
-                pass
+                # If value cannot be converted to float, set it to 0
+                numeric_features.append(0)
         
         # Convert numeric features to numpy array
         features = np.array([numeric_features])
 
-        # Predict unemployment rate
-        prediction = model.predict(features)
+        # Calculate unemployment rate
+        total, employed, unemployed = numeric_features[:3]
+        unemployment_rate = (unemployed / (employed + unemployed)) * 100
 
-        # Scale prediction to percentage
-        scaled_prediction = prediction[0] * 100
+        # Check if unemployment rate is greater than or equal to 50%
+        if unemployment_rate >= 50:
+            recommendation = 'not recommended'
+        else:
+            recommendation = 'recommended'
 
         # Render template with prediction and majors
-        return render_template('pages/major.html', prediction_text='{} unemployment percentage is {:.2f}%'.format(major_input, scaled_prediction), majors=majors)
+        return render_template('pages/major.html', prediction_text='{} unemployment percentage is {:.2f}%. This major is {}.'.format(major_input, unemployment_rate, recommendation), majors=majors)
 
     else:
         # Ambil data dari kolom 'Major'
         majors = df['Major'].tolist()
 
         return render_template('pages/major.html', majors=majors)
-
-import locale
 
 @app.route('/salary', methods=['GET', 'POST'])
 def salary():
@@ -102,11 +108,14 @@ def salary():
         # Predict salary rate
         salary_prediction = modelSalary.predict(features)
 
-        # Format prediction as USD
+        # Format prediction and average salary as USD
         salary_formatted = locale.currency(salary_prediction[0], grouping=True)
 
+        # Check if salary prediction is recommended or not
+        recommendation = 'recommended' if salary_prediction[0] >= 59384 else 'not recommended'
+
         # Render template with prediction and majors
-        return render_template('pages/salary.html', prediction_text='{} salary rate is {}'.format(major_input, salary_formatted), majors=majors)
+        return render_template('pages/salary.html', prediction_text='{} salary rate is {}. This major is {}.'.format(major_input, salary_formatted,  recommendation), majors=majors)
     
     else:
         # Ambil data dari kolom 'Major'

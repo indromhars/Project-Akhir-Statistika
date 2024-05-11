@@ -5,7 +5,7 @@ import pandas as pd
 
 # Load the dataset
 file_path = '../data/all-ages.csv'
-df = pd.read_csv(file_path, usecols=['Total', 'Employed', 'Employed_full_time_year_round', 'Unemployed','Unemployment_rate'])
+df = pd.read_csv(file_path, usecols=['Total', 'Employed', 'Unemployed','Unemployment_rate'])
 
 # Drop rows with missing values
 df = df.dropna()

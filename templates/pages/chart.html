@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}Statistika{% endblock %}
 {% block content %}
     <div class="mt-24">
         <div class="max-w-fit ml-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -24,5 +23,9 @@
     <div>
         <h1>Bar Chart for Employed</h1>
         <img src="data:image/png;base64,{{ bar_chart_data }}" alt="Bar Chart for Employed">
+    </div>
+    <div>
+        <h1>Heatmap</h1>
+        <img src="data:image/png;base64,{{ heatmap_data }}" alt="Heatmap">
     </div>
 {% endblock %}
