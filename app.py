@@ -60,7 +60,10 @@ def major():
 
         # Calculate unemployment rate
         total, employed, unemployed = numeric_features[:3]
-        unemployment_rate = (unemployed / (employed + unemployed)) * 100
+        if employed + unemployed == 0:
+            unemployment_rate = 100  # Handle division by zero
+        else:
+            unemployment_rate = (unemployed / (employed + unemployed)) * 100
 
         # Check if unemployment rate is greater than or equal to 50%
         if unemployment_rate >= 50:
