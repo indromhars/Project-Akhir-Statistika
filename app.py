@@ -62,7 +62,7 @@ def major():
         unemployment_rate = model.predict(features)[0]
 
         # Check if unemployment rate is greater than or equal to 3.9%
-        if unemployment_rate >= 3.9:
+        if unemployment_rate > 3.9:
             recommendation = 'not recommended'
         else:
             recommendation = 'recommended'
