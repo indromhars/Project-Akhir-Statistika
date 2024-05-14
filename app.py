@@ -6,8 +6,10 @@ import pickle
 import locale
 
 app = Flask(__name__, template_folder="templates")
+
 model = pickle.load(open('train/model.pkl', 'rb'))
 modelSalary = pickle.load(open('train/modelSalary.pkl', 'rb'))
+
 file_path = 'data/all-ages.csv'
 df = pd.read_csv(file_path)
 
@@ -58,11 +60,15 @@ def major():
         # Convert numeric features to numpy array
         features = np.array([numeric_features])
 
-        # Predict unemployment rate
-        unemployment_rate = model.predict(features)[0]
+        # Calculate unemployment rate
+        total, employed, unemployed = numeric_features[:3]
+        if employed + unemployed == 0:
+            unemployment_rate = 100  # Handle division by zero
+        else:
+            unemployment_rate = (unemployed / (employed + unemployed)) * 100
 
-        # Check if unemployment rate is greater than or equal to 3.9%
-        if unemployment_rate > 3.9:
+        # Check if unemployment rate is greater than or equal to 50%
+        if unemployment_rate >= 50:
             recommendation = 'not recommended'
         else:
             recommendation = 'recommended'
