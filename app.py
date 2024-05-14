@@ -68,7 +68,7 @@ def major():
             unemployment_rate = (unemployed / (employed + unemployed)) * 100
 
         # Check if unemployment rate is greater than or equal to 50%
-        if unemployment_rate >= 50:
+        if unemployment_rate >= 3.9:
             recommendation = 'not recommended'
         else:
             recommendation = 'recommended'
