@@ -15,7 +15,7 @@ Python packages to install:
 1. Flask
 2. pandas
 3. matplotlib
-4. pickle
+4. seaborn
 5. scikit-learn
 
 > [!NOTE]
