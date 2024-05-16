@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="flex justify-center">
+        <div class="w-full max-w-fit mt-28 mx-auto p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <form class="space-y-6 m-auto" method="POST">
+                <h5 class="text-xl text-center font-bold text-gray-900 dark:text-white">Predict Major Unemployment Rate</h5>
+                <div>
+                    <label for="major" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a Major</label>
+                    <select id="major" name="Major" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        {% for major in majors %}
+                            <option value="{{ major }}">{{ major }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="Total" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total</label>
+                    <input type="number" id="total" name="Total" placeholder="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                </div>
+                <div>
+                    <label for="Employed" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Employed</label>
+                    <input type="number" id="employed" name="Employed" placeholder="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                </div>
+                <div>
+                    <label for="Unemployed" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unemployed</label>
+                    <input type="number" id="unemployed" name="Unemployed" placeholder="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                </div>
+                <button type="submit" class="w-1/4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 m-auto text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all">
+                    Process
+                </button>
+            </form>
+        </div>
+    
+        {% if prediction_text %}
+            <div class="max-w-prose p-6 mx-auto h-fit mt-28 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <div>
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Unemployment rate prediction result</h5>
+                </div>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ prediction_text }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    To determine recommended or not the major is, we compare the predicted data percentage to 3.9%. If the predicted data is above 3.9% the major that you choose is not recommended, and vice versa, if the predicted data is below 3.9% the major that you choose is automatically set to recommended by the system.
+                </p>
+                <a href="/chart" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Read more
+                    <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
