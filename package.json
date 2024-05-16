@@ -3,6 +3,8 @@
     "tailwindcss": "^3.4.3"
   },
   "dependencies": {
-    "flowbite": "^2.3.0"
+    "debug": "^4.3.4",
+    "flowbite": "^2.3.0",
+    "uuid": "^9.0.1"
   }
 }
