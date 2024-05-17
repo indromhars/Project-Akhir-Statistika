@@ -6,5 +6,8 @@
     "debug": "^4.3.4",
     "flowbite": "^2.3.0",
     "uuid": "^9.0.1"
+  },
+  "scripts": {
+    "tailwindcss-watch": "npx tailwindcss -i ./app/static/src/input.css -o ./app/static/dist/css/output.css --watch"
   }
 }
