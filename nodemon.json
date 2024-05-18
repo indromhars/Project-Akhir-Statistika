@@ -1,0 +1,5 @@
+{
+    "watch": ["app/templates", "app/static/src", "*.py"],
+    "ext": "py,html,js",
+    "exec": "flask run"
+}  

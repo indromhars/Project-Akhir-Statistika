@@ -23,11 +23,12 @@ Python packages to install:
 Frontend packages to install:
 1. Tailwind
 2. Flowbite
+3. concurrently
+4. nodemon
 
 
 > [!IMPORTANT]
 > To run the project, you need to run the following command.
 ```bash
-  python app.py run
-  npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/output.css --watch
+  npm run dev
 ```

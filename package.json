@@ -3,11 +3,16 @@
     "tailwindcss": "^3.4.3"
   },
   "dependencies": {
+    "concurrently": "^8.2.2",
     "debug": "^4.3.4",
     "flowbite": "^2.3.0",
+    "nodemon": "^3.1.0",
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "tailwindcss-watch": "npx tailwindcss -i ./app/static/src/input.css -o ./app/static/dist/css/output.css --watch"
+    "build": "npx tailwindcss -i ./app/static/src/input.css -o ./app/static/dist/css/output.css",
+    "watch:tailwind": "npx tailwindcss -i ./app/static/src/input.css -o ./app/static/dist/css/output.css --watch",
+    "watch:flask": "nodemon --ext py,html --exec 'flask run'",
+    "dev": "concurrently \"npm run watch:tailwind\" \"npm run watch:flask\""
   }
 }
